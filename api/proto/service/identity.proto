@@ -1,0 +1,103 @@
+syntax = "proto3";
+
+package pb;
+option go_package="./api/pb";
+
+import "google/api/annotations.proto";
+import "validate/validate.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "google/protobuf/wrappers.proto";
+import "common.proto";
+
+
+service identity {
+  rpc walletLoginNonce(WalletLoginNonceReq) returns(WalletLoginNonceResp) {
+    option (google.api.http) = {
+      get: "/auth/login/nonce"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "get wallet login nonce"
+      security: {
+        security_requirement: {
+          key: "Anonymous";
+          value: {}
+        }
+      }
+    };
+  }
+    
+  rpc login(LoginReq) returns(LoginResp) {
+    option (google.api.http) = {
+      post: "/auth/login"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "login by telegram"
+      security: {
+        security_requirement: {
+          key: "Anonymous";
+          value: {}
+        }
+      }
+    };
+  }
+
+  rpc loginByWallet(LoginByWalletReq) returns(LoginByWalletResp) {
+    option (google.api.http) = {
+      post: "/auth/loginByWallet"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "login by wallet"
+      security: {
+        security_requirement: {
+          key: "Anonymous";
+          value: {}
+        }
+      }
+    };
+  }
+
+  rpc userinfo(UserinfoReq) returns(UserinfoResp) {
+    option (google.api.http) = {
+      get: "/user/{uid}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "userinfo"
+    };
+  }
+}
+
+
+
+
+message UserInfo {
+  uint64 uid = 1;
+  string username = 2;
+  string avatar = 3;
+  string mobile = 4;
+  string email = 5;
+}
+message UserinfoReq {
+  uint64 uid = 1;
+  string username = 2;
+  optional string avatar = 3;
+  optional string mobile = 4;
+  optional string email = 5;
+}
+message UserinfoResp {
+  UserInfo data = 1;
+}
+
+
+
+message LoginReq {
+}
+message LoginResp {
+  string accessToken = 1;
+}
+
+message WalletLoginNonceReq{}
+message WalletLoginNonceResp{}
+
+message LoginByWalletReq{}
+message LoginByWalletResp{}
+

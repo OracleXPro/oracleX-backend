@@ -1,0 +1,206 @@
+syntax = "proto3";
+
+package pb;
+option go_package="./api/pb";
+
+import "google/api/annotations.proto";
+import "validate/validate.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "google/protobuf/wrappers.proto";
+
+
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+  info: {
+    title: "oracleX backend";
+  };
+  schemes: HTTP;
+
+  security_definitions: {
+    security: {
+      key: "bearer"
+      value: {
+        type: TYPE_API_KEY
+        in: IN_HEADER
+        name: "Authorization"
+        description: "Authentication token, prefixed by Bearer: Bearer <token>"
+      }
+    }
+    security: {
+      key: "BasicAuth";
+      value: {type: TYPE_BASIC}
+    }
+  }
+  security: {
+    security_requirement: {
+      key: "bearer"
+    }
+  }
+  security: {
+    security_requirement: {
+      key: "BasicAuth";
+      value: {};
+    }
+    security_requirement: {
+      key: "bearer"
+      value: {};
+    }
+  }
+};
+
+// ------------------ common.proto -------------------
+
+
+
+message ErrorMessage {
+  string message = 1;
+}
+
+message Message {
+  string message = 1;
+}
+
+message UserInfoBase {
+  int64 uid = 1;
+  string avatar = 2;
+  string username = 3;
+  string address = 4;
+}
+
+
+message MessageResponse {
+  string message = 1;
+}
+
+message CodeMessage {
+  int32 code = 1;
+  string message = 2;
+}
+
+
+// ------------------ health.proto -------------------
+
+
+
+service health {
+  rpc Ping(Request) returns(Response) {
+    option (google.api.http) = {
+      get: "/ping/{ping}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "ping"
+      security: {
+        security_requirement: {
+          key: "Anonymous";
+          value: {}
+        }
+      }
+    };
+  }
+}
+message Request {
+  string ping = 1;
+}
+
+message Response {
+  string pong = 1 [(validate.rules).string = {}];
+}
+
+
+// ------------------ identity.proto -------------------
+
+
+
+
+service identity {
+  rpc walletLoginNonce(WalletLoginNonceReq) returns(WalletLoginNonceResp) {
+    option (google.api.http) = {
+      get: "/auth/login/nonce"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "get wallet login nonce"
+      security: {
+        security_requirement: {
+          key: "Anonymous";
+          value: {}
+        }
+      }
+    };
+  }
+    
+  rpc login(LoginReq) returns(LoginResp) {
+    option (google.api.http) = {
+      post: "/auth/login"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "login by telegram"
+      security: {
+        security_requirement: {
+          key: "Anonymous";
+          value: {}
+        }
+      }
+    };
+  }
+
+  rpc loginByWallet(LoginByWalletReq) returns(LoginByWalletResp) {
+    option (google.api.http) = {
+      post: "/auth/loginByWallet"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "login by wallet"
+      security: {
+        security_requirement: {
+          key: "Anonymous";
+          value: {}
+        }
+      }
+    };
+  }
+
+  rpc userinfo(UserinfoReq) returns(UserinfoResp) {
+    option (google.api.http) = {
+      get: "/user/{uid}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "userinfo"
+    };
+  }
+}
+
+
+
+
+message UserInfo {
+  uint64 uid = 1;
+  string username = 2;
+  string avatar = 3;
+  string mobile = 4;
+  string email = 5;
+}
+message UserinfoReq {
+  uint64 uid = 1;
+  string username = 2;
+  optional string avatar = 3;
+  optional string mobile = 4;
+  optional string email = 5;
+}
+message UserinfoResp {
+  UserInfo data = 1;
+}
+
+
+
+message LoginReq {
+}
+message LoginResp {
+  string accessToken = 1;
+}
+
+message WalletLoginNonceReq{}
+message WalletLoginNonceResp{}
+
+message LoginByWalletReq{}
+message LoginByWalletResp{}
+
+
+

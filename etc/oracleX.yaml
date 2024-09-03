@@ -1,0 +1,56 @@
+Name: oracleX.rpc
+ListenOn: 127.0.0.1:8080
+#Etcd:
+#  Hosts:
+#  - 127.0.0.1:2379
+#  Key: zero.rpc
+
+Gateway:
+  MaxBytes: 52428800   # 50MB
+  Name: gateway
+  Host: 0.0.0.0
+  Port: 8888
+  Timeout: 15000
+  Upstreams:
+    - Name: rpc-server
+      Grpc:
+        Endpoints:
+          - localhost:8080
+        Timeout: 15000
+      ProtoSets:
+        - ./api/pb/descriptor.pb
+
+Log:
+  ServiceName: OracleX
+  Mode: console
+  Level: debug
+  Encoding: plain
+  Stat: false
+
+
+MysqlDB:
+  DataSource: ${MYSQL_USER}:${MYSQL_PASSWORD}@tcp(${MYSQL_HOST}:${MYSQL_PORT})/${DB_NAME}?charset=utf8mb4&parseTime=true&timeout=5s
+
+JWT:
+  - Name: "OracleX"
+    AccessSecret: 0x3f3f4f5f3fdasfbalsdkfjasdghlsgfhjweotquyzxcbwqyy
+    AccessExpire: 86400
+
+Cache:
+  - Host: ${REDIS_ADDR}:${REDIS_PORT}
+    Pass:
+    Type: node
+BizCache:
+  Host: ${REDIS_ADDR}:${REDIS_PORT}
+  Pass:
+  Type: node
+
+RedisDB:
+  Addr: ${REDIS_ADDR}
+  DB: ${REDIS_DB}
+  Passwd: ${REDIS_PASSWD}
+
+TelegramBotConfig:
+  - Name: "OracleX"
+    Secret: ""
+    Expire: 0
