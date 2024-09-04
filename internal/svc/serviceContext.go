@@ -5,8 +5,6 @@ import (
 	"oracleX-backend/internal/model/db"
 	"oracleX-backend/pkg/zero-contrib/jwtx"
 
-	"github.com/zeromicro/go-zero/core/stores/redis"
-	"github.com/zeromicro/go-zero/core/stores/sqlc"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 )
 
