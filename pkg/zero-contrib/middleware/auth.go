@@ -83,9 +83,9 @@ func Auth(jwtManager *jwtx.JWTManager, botConfig []config.TelegramBotConfig, map
 			}
 
 			r.Header.Set("Grpc-Metadata-auth-date", authDateStr)
-			r.Header.Set("Grpc-Metadata-first-name", url.QueryEscape(firstName))
-			r.Header.Set("Grpc-Metadata-last-name", url.QueryEscape(lastName))
-			r.Header.Set("Grpc-Metadata-username", url.QueryEscape(username))
+			r.Header.Set("Grpc-Metadata-tg-first-name", url.QueryEscape(firstName))
+			r.Header.Set("Grpc-Metadata-tg-last-name", url.QueryEscape(lastName))
+			r.Header.Set("Grpc-Metadata-tg-username", url.QueryEscape(username))
 			r.Header.Set("Grpc-Metadata-tg-uid", fmt.Sprintf("%d", tgUid))
 
 			if !mapper.IsRequireAuth(r.Method, r.RequestURI) {

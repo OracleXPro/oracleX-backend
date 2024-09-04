@@ -14,10 +14,9 @@ type ServiceContext struct {
 	Config     config.Config
 	JwtManager *jwtx.JWTManager
 
-	BizCache *redis.Redis
-
 	MySQLConn sqlx.SqlConn
-	CacheDB   sqlc.CachedConn
+	// CacheDB   sqlc.CachedConn
+	// BizCache *redis.Redis
 
 	UserModel     db.UserModel
 	TelegramModel db.TelegramModel

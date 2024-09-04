@@ -6,8 +6,8 @@ import (
 )
 
 func Verify(botToken, hash2, initData string) (bool, error) {
-	secretKey := makeHMAC([]byte("WebAppData"), []byte(botToken))
-	hash := makeHMAC(secretKey, []byte(initData))
+	secretKey := generateHMACSHA256([]byte("WebAppData"), []byte(botToken))
+	hash := generateHMACSHA256(secretKey, []byte(initData))
 
 	if hex.EncodeToString(hash) == hash2 {
 		return true, nil

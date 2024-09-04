@@ -1,7 +1,6 @@
 package telegramx
 
 import (
-	"fmt"
 	"testing"
 )
 
@@ -26,7 +25,7 @@ func TestGetUser(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		} else {
-			fmt.Printf("%+v\n", u)
+			t.Logf("%+v\n", u)
 		}
 	}
 }
