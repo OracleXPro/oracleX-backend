@@ -10,6 +10,7 @@ type (
 	UserModel interface {
 		userModel
 		withSession(session sqlx.Session) UserModel
+		WithSession(session sqlx.Session) UserModel
 	}
 
 	customUserModel struct {
@@ -25,5 +26,9 @@ func NewUserModel(conn sqlx.SqlConn) UserModel {
 }
 
 func (m *customUserModel) withSession(session sqlx.Session) UserModel {
+	return NewUserModel(sqlx.NewSqlConnFromSession(session))
+}
+
+func (m *customUserModel) WithSession(session sqlx.Session) UserModel {
 	return NewUserModel(sqlx.NewSqlConnFromSession(session))
 }

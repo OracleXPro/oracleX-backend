@@ -10,6 +10,7 @@ type (
 	TelegramModel interface {
 		telegramModel
 		withSession(session sqlx.Session) TelegramModel
+		WithSession(session sqlx.Session) TelegramModel
 	}
 
 	customTelegramModel struct {
@@ -25,5 +26,9 @@ func NewTelegramModel(conn sqlx.SqlConn) TelegramModel {
 }
 
 func (m *customTelegramModel) withSession(session sqlx.Session) TelegramModel {
+	return NewTelegramModel(sqlx.NewSqlConnFromSession(session))
+}
+
+func (m *customTelegramModel) WithSession(session sqlx.Session) TelegramModel {
 	return NewTelegramModel(sqlx.NewSqlConnFromSession(session))
 }

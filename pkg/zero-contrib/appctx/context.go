@@ -77,3 +77,24 @@ func GetTelegramLastName(ctx context.Context) (string, error) {
 	}
 	return lastName, nil
 }
+
+type TelegramUserinfo struct {
+	Uid       int64
+	Username  string
+	FirstName string
+	LastName  string
+}
+
+func GetTelegramUserinfo(ctx context.Context) *TelegramUserinfo {
+	uid, _ := GetTelegramUid(ctx)
+	username, _ := GetTelegramUsername(ctx)
+	firstName, _ := GetTelegramFirstName(ctx)
+	lastName, _ := GetTelegramLastName(ctx)
+
+	return &TelegramUserinfo{
+		Uid:       uid,
+		Username:  username,
+		FirstName: firstName,
+		LastName:  lastName,
+	}
+}
