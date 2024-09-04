@@ -1,9 +1,5 @@
 Name: oracleX.rpc
 ListenOn: 127.0.0.1:8080
-#Etcd:
-#  Hosts:
-#  - 127.0.0.1:2379
-#  Key: zero.rpc
 
 Gateway:
   MaxBytes: 52428800   # 50MB
@@ -27,30 +23,22 @@ Log:
   Encoding: plain
   Stat: false
 
+JWT:
+  - Name: "OracleX"
+    AccessSecret: ${JWT_ACCESS_SECRET}
+    AccessExpire: ${JWT_ACCESS_EXPIRE}
+
+TelegramBotConfig:
+  - Name: ${TG_BOT_NAME}
+    Secret: ${TG_BOT_SECRET}
+    Expire: ${TG_BOT_EXPIRE}
 
 MysqlDB:
   DataSource: ${MYSQL_USER}:${MYSQL_PASSWORD}@tcp(${MYSQL_HOST}:${MYSQL_PORT})/${DB_NAME}?charset=utf8mb4&parseTime=true&timeout=5s
 
-JWT:
-  - Name: "OracleX"
-    AccessSecret: 0x3f3f4f5f3fdasfbalsdkfjasdghlsgfhjweotquyzxcbwqyy
-    AccessExpire: 86400
-
-Cache:
-  - Host: ${REDIS_ADDR}:${REDIS_PORT}
-    Pass:
-    Type: node
-BizCache:
-  Host: ${REDIS_ADDR}:${REDIS_PORT}
-  Pass:
-  Type: node
 
 RedisDB:
   Addr: ${REDIS_ADDR}
   DB: ${REDIS_DB}
   Passwd: ${REDIS_PASSWD}
 
-TelegramBotConfig:
-  - Name: "OracleX"
-    Secret: ""
-    Expire: 0
