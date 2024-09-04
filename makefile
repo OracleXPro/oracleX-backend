@@ -1,5 +1,9 @@
 #include .env
 
+NETWORK=oraclex 
+PROJECT=oraclex 
+
+
 .PHONY: goZero
 goZero:
 	goctl rpc protoc -m --proto_path=api/proto api/proto/*.proto --go_out=. --go-grpc_out=. --zrpc_out=. --style goZero
@@ -46,15 +50,16 @@ build:
 healthy:
 	curl localhost:8888/ping/health
 
-.PHONY: local-network
-local-network:
-	docker network create $(LOCAL)
 
-.PHONY: up_local
-up_local:
-	cd deploy/docker-compose && docker-compose --env-file ../../.env -p $(LOCAL) -f docker-compose-local.yaml up -d
+.PHONY: network
+network:
+	docker network create $(NETWORK)
+
+.PHONY: up
+up:
+	cd deployment && docker-compose --env-file ../.env -p $(PROJECT) -f docker-compose.yaml up -d
 
 
-.PHONY: down_local
-down_local:
-	cd deploy/docker-compose && docker-compose -p $(LOCAL) -f docker-compose-local.yaml down
+.PHONY: down
+down:
+	cd deployment && docker-compose --env-file ../.env -p $(PROJECT) -f docker-compose.yaml down

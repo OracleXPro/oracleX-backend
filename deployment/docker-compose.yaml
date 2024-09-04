@@ -1,0 +1,83 @@
+version: "3"
+services:
+  apisix_dashboard:
+    image: "apache/apisix-dashboard:3.0.1-alpine"
+    restart: always
+    volumes:
+      - ./apisix/dashboard/conf.yaml:/usr/local/apisix-dashboard/conf/conf.yaml:ro
+    ports:
+      - "9001:9000/tcp"
+    depends_on:
+      - etcd
+    networks:
+      - network1
+
+  apisix:
+    image: apache/apisix:${APISIX_IMAGE_TAG:-3.7.0-debian}
+    user: root
+    restart: always
+    depends_on:
+      - etcd
+    volumes:
+      - ./apisix/apisix/config.yaml:/usr/local/apisix/conf/config.yaml:ro
+    ports:
+      - "80:9080/tcp"
+      - "443:9443/tcp"
+      - "9180:9180/tcp"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - network1
+
+  swagger:
+    image: swaggerapi/swagger-ui:v5.10.3
+    environment:
+      - SWAGGER_JSON=/swagger/swagger.json
+    volumes:
+      - ../api/swagger/oracleX.swagger.json:/swagger/swagger.json
+    networks:
+      - network1
+
+  backend:
+    build:
+      context: ../.
+      dockerfile: Dockerfile
+    restart: always
+    env_file:
+      - ../.env
+    networks:
+      - network1
+  
+  redis:
+    image: redis:7.0.0
+    restart: always
+    volumes:
+      - redis_data:/data
+    ports:
+      - "63790:6379"  # NOTICE: 63790
+    networks:
+      - network1
+  
+  etcd:
+    image: bitnami/etcd:3.5.9
+    restart: always
+    volumes:
+      - etcd_data:/bitnami/etcd
+    environment:
+      ETCD_ENABLE_V2: "true"
+      ALLOW_NONE_AUTHENTICATION: "yes"
+      #      TZ: "Asia/Shanghai"
+      ETCD_ADVERTISE_CLIENT_URLS: "http://etcd:2379"
+      ETCD_LISTEN_CLIENT_URLS: "http://0.0.0.0:2379"
+    networks:
+      - network1
+
+networks:
+  network1:
+    name: ${NETWORK}
+    external: true
+volumes:
+  etcd_data:
+    driver: local
+  redis_data:
+    driver: local
